@@ -10,10 +10,10 @@ app = Flask(__name__)
 
 conn_str = "dbname=daf2"
 
-if "ip" in os.environ:
-    conn_str += " host={} ".format(os.environ['ip'])
-if "password" in os.environ:
-    conn_str += " user=deelfietsdashboard password={}".format(os.environ['password'])
+if "IP" in os.environ:
+    conn_str += " host={} ".format(os.environ['IP'])
+if "DB_PASSWORD" in os.environ:
+    conn_str += " user=daf password={}".format(os.environ['DB_PASSWORD'])
 
 
 conn = psycopg2.connect(conn_str)
@@ -54,8 +54,8 @@ def input_event():
     try:
         event_validator(data)
         print("ok")
-    except fastjsonschema.JsonSchemaException:
-        return {'message': "Incorrect JSON input."}, 422
+    except fastjsonschema.JsonSchemaException e:
+        return {'message': "Incorrect JSON input. [" + e.message + "]"}, 422
     
     msg = mevent.Event.insert(conn, data)
     if msg:

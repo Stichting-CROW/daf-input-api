@@ -1,365 +1,395 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "http://example.com/example.json",
-    "type": "object",
-    "title": "The Root Schema",
-    "description": "The root schema comprises the entire JSON document.",
-    "default": {},
-    "additionalProperties": true,
-    "required": [
-        "event_type",
-        "timestamp",
-        "bike"
-    ],
-    "properties": {
-        "event_type": {
-            "$id": "#/properties/event_type",
-            "type": "string",
-            "title": "The Event_type Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": "",
-            "enum": [ "check_in_depot", "check_out_depot" ],
-            "examples": [
-                "check_in_depot"
-            ]
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "default": {},
+  "additionalProperties": true,
+  "required": [
+    "event_type",
+    "timestamp",
+    "bike"
+  ],
+    
+  "properties": {
+    "event_type": {
+      "$id": "#/properties/event_type",
+      "type": "string",
+      "title": "The Event_type Schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "enum": [
+        "check_in_depot",
+        "check_out_depot"
+      ],
+      "examples": [
+        "check_in_depot"
+      ]
+    },
+    "extra_information": {
+      "$id": "#/properties/extra_information",
+      "type": "string",
+      "title": "The Extra_information Schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "Optionele extra informatie over waarom fiets bijvoorbeeld is meegenomen."
+      ]
+    },
+    "timestamp": {
+      "$id": "#/properties/timestamp",
+      "type": "string",
+      "title": "The Timestamp Schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "2019-09-22T11:14:00Z"
+      ]
+    },
+    "bike": {
+      "$id": "#/properties/bike",
+      "type": "object",
+      "title": "The Bike Schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": {},
+      "examples": [
+        {
+          "color": "blue",
+          "brand": "Swapfiets",
+          "license_plate": "44AGR4",
+          "description": "Blauwe swapfiets met fietstas.",
+          "chip_number": "54513216",
+          "frame_number": "12277588"
+        }
+      ],
+      "additionalProperties": true,
+      "required": [
+        "brand"
+      ],
+      "properties": {
+        "frame_number": {
+          "$id": "#/properties/bike/properties/frame_number",
+          "type": "string",
+          "title": "The Frame_number Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "12277588"
+          ]
         },
-        "extra_information": {
-            "$id": "#/properties/extra_information",
-            "type": "string",
-            "title": "The Extra_information Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": "",
-            "examples": [
-                "Optionele extra informatie over waarom fiets bijvoorbeeld is meegenomen."
-            ]
+        "chip_number": {
+          "$id": "#/properties/bike/properties/chip_number",
+          "type": "string",
+          "title": "The Chip_number Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "54513216"
+          ]
+        },
+        "license_plate": {
+          "$id": "#/properties/bike/properties/license_plate",
+          "type": "string",
+          "title": "The License_plate Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "44AGR4"
+          ]
+        },
+        "brand": {
+          "$id": "#/properties/bike/properties/brand",
+          "type": "string",
+          "title": "The Brand Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "Swapfiets"
+          ]
+        },
+        "color": {
+          "$id": "#/properties/bike/properties/color",
+          "type": "string",
+          "title": "The Color Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "blue"
+          ]
+        },
+        "description": {
+          "$id": "#/properties/bike/properties/description",
+          "type": "string",
+          "title": "The Description Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "Blauwe swapfiets met fietstas."
+          ]
+        }
+      }
+    },
+    "depot_details": {
+      "$id": "#/properties/depot_details",
+      "type": "object",
+      "title": "The Depot_details Schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": {},
+      "examples": [
+        {
+          "name": "Kanaalweg",
+          "city": "Utrecht",
+          "street": "Kanaalweg 50",
+          "phone_number": "14 030",
+          "instruction": "Haal de fiets op bij de kanaalweg",
+          "depot_id": "pf:42",
+          "postal_code": "3526KM",
+          "municipality_code": "GM0344",
+          "email": "fietsdepot@utrecht.nl"
+        }
+      ],
+      "additionalProperties": true,
+      "required": [
+        "depot_id",
+        "municipality_code",
+        "city"
+      ],
+      "properties": {
+        "depot_id": {
+          "$id": "#/properties/depot_details/properties/depot_id",
+          "type": "string",
+          "title": "The Depot_id Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "pf:42"
+          ]
+        },
+        "municipality_code": {
+          "$id": "#/properties/depot_details/properties/municipality_code",
+          "type": "string",
+          "title": "The Municipality_code Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "GM0344"
+          ]
+        },
+        "name": {
+          "$id": "#/properties/depot_details/properties/name",
+          "type": "string",
+          "title": "The Name Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "Kanaalweg"
+          ]
+        },
+        "street": {
+          "$id": "#/properties/depot_details/properties/street",
+          "type": "string",
+          "title": "The Street Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "Kanaalweg 50"
+          ]
+        },
+        "postal_code": {
+          "$id": "#/properties/depot_details/properties/postal_code",
+          "type": "string",
+          "title": "The Postal_code Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "3526KM"
+          ]
+        },
+        "phone_number": {
+          "$id": "#/properties/depot_details/properties/phone_number",
+          "type": "string",
+          "title": "The Phone_number Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "14 030"
+          ]
+        },
+        "email": {
+          "$id": "#/properties/depot_details/properties/email",
+          "type": "string",
+          "title": "The Email Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "fietsdepot@utrecht.nl"
+          ]
+        },
+        "instruction": {
+          "$id": "#/properties/depot_details/properties/instruction",
+          "type": "string",
+          "title": "The Instruction Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "Haal de fiets op bij de kanaalweg"
+          ]
+        },
+        "city": {
+          "$id": "#/properties/depot_details/properties/city",
+          "type": "string",
+          "title": "The City Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "Utrecht"
+          ]
+        }
+      }
+    },
+    "enforcement_details": {
+      "$id": "#/properties/enforcement_details",
+      "type": "object",
+      "title": "The Enforcement_details Schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": {},
+      "examples": [
+        {
+          "timestamp": "2019-09-22T10:54:05Z",
+          "location_description": "Houten stations, fietsenstalling.",
+          "municipality_code": "GM0321",
+          "location": {
+            "longitude": 5.0,
+            "latitude": 52.0
+          },
+          "free_text_reason": "Langer dan 28 dagen geparkeerd.",
+          "city": "Houten"
+        }
+      ],
+      "additionalProperties": true,
+      "required": [
+        "city",
+        "municipality_code"
+      ],
+      "properties": {
+        "city": {
+          "$id": "#/properties/enforcement_details/properties/city",
+          "type": "string",
+          "title": "The City Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "Houten"
+          ]
+        },
+        "municipality_code": {
+          "$id": "#/properties/enforcement_details/properties/municipality_code",
+          "type": "string",
+          "title": "The Municipality_code Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "GM0321"
+          ]
+        },
+        "location_description": {
+          "$id": "#/properties/enforcement_details/properties/location_description",
+          "type": "string",
+          "title": "The Location_description Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "Houten stations, fietsenstalling."
+          ]
+        },
+        "location": {
+          "$id": "#/properties/enforcement_details/properties/location",
+          "type": "object",
+          "title": "The Location Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": {},
+          "examples": [
+            {
+              "longitude": 5.0,
+              "latitude": 52.0
+            }
+          ],
+          "additionalProperties": true,
+          "required": [
+            "latitude",
+            "longitude"
+          ],
+          "properties": {
+            "latitude": {
+              "$id": "#/properties/enforcement_details/properties/location/properties/latitude",
+              "type": "number",
+              "title": "The Latitude Schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": 0,
+              "examples": [
+                52.0
+              ]
+            },
+            "longitude": {
+              "$id": "#/properties/enforcement_details/properties/location/properties/longitude",
+              "type": "number",
+              "title": "The Longitude Schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": 0,
+              "examples": [
+                5.0
+              ]
+            }
+          }
+        },
+        "free_text_reason": {
+          "$id": "#/properties/enforcement_details/properties/free_text_reason",
+          "type": "string",
+          "title": "The Free_text_reason Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "Langer dan 28 dagen geparkeerd."
+          ]
         },
         "timestamp": {
-            "$id": "#/properties/timestamp",
-            "type": "string",
-            "title": "The Timestamp Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": "",
-            "examples": [
-                "2019-09-22T11:14:00Z"
-            ]
-        },
-        "bike": {
-            "$id": "#/properties/bike",
-            "type": "object",
-            "title": "The Bike Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "examples": [
-                {
-                    "color": "blue",
-                    "brand": "Swapfiets",
-                    "license_plate": "44AGR4",
-                    "description": "Blauwe swapfiets met fietstas.",
-                    "chip_number": "54513216",
-                    "frame_number": "12277588"
-                }
-            ],
-            "additionalProperties": true,
-            "required": [
-                "brand"
-            ],
-            "properties": {
-                "frame_number": {
-                    "$id": "#/properties/bike/properties/frame_number",
-                    "type": "string",
-                    "title": "The Frame_number Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "12277588"
-                    ]
-                },
-                "chip_number": {
-                    "$id": "#/properties/bike/properties/chip_number",
-                    "type": "string",
-                    "title": "The Chip_number Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "54513216"
-                    ]
-                },
-                "license_plate": {
-                    "$id": "#/properties/bike/properties/license_plate",
-                    "type": "string",
-                    "title": "The License_plate Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "44AGR4"
-                    ]
-                },
-                "brand": {
-                    "$id": "#/properties/bike/properties/brand",
-                    "type": "string",
-                    "title": "The Brand Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "Swapfiets"
-                    ]
-                },
-                "color": {
-                    "$id": "#/properties/bike/properties/color",
-                    "type": "string",
-                    "title": "The Color Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "blue"
-                    ]
-                },
-                "description": {
-                    "$id": "#/properties/bike/properties/description",
-                    "type": "string",
-                    "title": "The Description Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "Blauwe swapfiets met fietstas."
-                    ]
-                }
-            }
-        },
-        "depot_details": {
-            "$id": "#/properties/depot_details",
-            "type": "object",
-            "title": "The Depot_details Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "examples": [
-                {
-                    "name": "Kanaalweg",
-                    "city": "Utrecht",
-                    "street": "Kanaalweg 50",
-                    "phone_number": "14 030",
-                    "instruction": "Haal de fiets op bij de kanaalweg",
-                    "depot_id": "pf:42",
-                    "postal_code": "3526KM",
-                    "municipality_code": "GM0344",
-                    "email": "fietsdepot@utrecht.nl"
-                }
-            ],
-            "additionalProperties": true,
-            "required": [
-                "depot_id",
-                "municipality_code",
-                "city"
-            ],
-            "properties": {
-                "depot_id": {
-                    "$id": "#/properties/depot_details/properties/depot_id",
-                    "type": "string",
-                    "title": "The Depot_id Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "pf:42"
-                    ]
-                },
-                "municipality_code": {
-                    "$id": "#/properties/depot_details/properties/municipality_code",
-                    "type": "string",
-                    "title": "The Municipality_code Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "GM0344"
-                    ]
-                },
-                "name": {
-                    "$id": "#/properties/depot_details/properties/name",
-                    "type": "string",
-                    "title": "The Name Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "Kanaalweg"
-                    ]
-                },
-                "street": {
-                    "$id": "#/properties/depot_details/properties/street",
-                    "type": "string",
-                    "title": "The Street Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "Kanaalweg 50"
-                    ]
-                },
-                "postal_code": {
-                    "$id": "#/properties/depot_details/properties/postal_code",
-                    "type": "string",
-                    "title": "The Postal_code Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "3526KM"
-                    ]
-                },
-                "phone_number": {
-                    "$id": "#/properties/depot_details/properties/phone_number",
-                    "type": "string",
-                    "title": "The Phone_number Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "14 030"
-                    ]
-                },
-                "email": {
-                    "$id": "#/properties/depot_details/properties/email",
-                    "type": "string",
-                    "title": "The Email Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "fietsdepot@utrecht.nl"
-                    ]
-                },
-                "instruction": {
-                    "$id": "#/properties/depot_details/properties/instruction",
-                    "type": "string",
-                    "title": "The Instruction Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "Haal de fiets op bij de kanaalweg"
-                    ]
-                },
-                "city": {
-                    "$id": "#/properties/depot_details/properties/city",
-                    "type": "string",
-                    "title": "The City Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "Utrecht"
-                    ]
-                }
-            }
-        },
-        "enforcement_details": {
-            "$id": "#/properties/enforcement_details",
-            "type": "object",
-            "title": "The Enforcement_details Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "examples": [
-                {
-                    "timestamp": "2019-09-22T10:54:05Z",
-                    "location_description": "Houten stations, fietsenstalling.",
-                    "municipality_code": "GM0321",
-                    "location": {
-                        "longitude": 5.0,
-                        "latitude": 52.0
-                    },
-                    "free_text_reason": "Langer dan 28 dagen geparkeerd.",
-                    "city": "Houten"
-                }
-            ],
-            "additionalProperties": true,
-            "required": [
-                "city",
-                "municipality_code"
-            ],
-            "properties": {
-                "city": {
-                    "$id": "#/properties/enforcement_details/properties/city",
-                    "type": "string",
-                    "title": "The City Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "Houten"
-                    ]
-                },
-                "municipality_code": {
-                    "$id": "#/properties/enforcement_details/properties/municipality_code",
-                    "type": "string",
-                    "title": "The Municipality_code Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "GM0321"
-                    ]
-                },
-                "location_description": {
-                    "$id": "#/properties/enforcement_details/properties/location_description",
-                    "type": "string",
-                    "title": "The Location_description Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "Houten stations, fietsenstalling."
-                    ]
-                },
-                "location": {
-                    "$id": "#/properties/enforcement_details/properties/location",
-                    "type": "object",
-                    "title": "The Location Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": {},
-                    "examples": [
-                        {
-                            "longitude": 5.0,
-                            "latitude": 52.0
-                        }
-                    ],
-                    "additionalProperties": true,
-                    "required": [
-                        "latitude",
-                        "longitude"
-                    ],
-                    "properties": {
-                        "latitude": {
-                            "$id": "#/properties/enforcement_details/properties/location/properties/latitude",
-                            "type": "number",
-                            "title": "The Latitude Schema",
-                            "description": "An explanation about the purpose of this instance.",
-                            "default": 0,
-                            "examples": [
-                                52.0
-                            ]
-                        },
-                        "longitude": {
-                            "$id": "#/properties/enforcement_details/properties/location/properties/longitude",
-                            "type": "number",
-                            "title": "The Longitude Schema",
-                            "description": "An explanation about the purpose of this instance.",
-                            "default": 0,
-                            "examples": [
-                                5.0
-                            ]
-                        }
-                    }
-                },
-                "free_text_reason": {
-                    "$id": "#/properties/enforcement_details/properties/free_text_reason",
-                    "type": "string",
-                    "title": "The Free_text_reason Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "Langer dan 28 dagen geparkeerd."
-                    ]
-                },
-                "timestamp": {
-                    "$id": "#/properties/enforcement_details/properties/timestamp",
-                    "type": "string",
-                    "title": "The Timestamp Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "2019-09-22T10:54:05Z"
-                    ]
-                }
-            }
+          "$id": "#/properties/enforcement_details/properties/timestamp",
+          "type": "string",
+          "title": "The Timestamp Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "2019-09-22T10:54:05Z"
+          ]
         }
+      }
     }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": ["check_in_depot", "check_out_depot"]
+          }
+        }
+      },
+      "then": {
+        "required": ["depot_details"]
+      }
+    },
+    {
+      "if": {
+      	"properties": {
+        	"event_type": {
+          		"enum": ["check_in_depot"]
+        	}
+      	}
+      },
+      "then": {
+      	"required": ["enforcement_details"]
+    	},
+   	}
+   ]
 }
