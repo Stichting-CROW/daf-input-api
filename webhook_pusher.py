@@ -34,7 +34,8 @@ class WebHookPusher():
         if msg["bike"]["brand"] != 'Swapfiets':
             return
         webhook_url = os.getenv("WEBHOOK_URL_SWAP")
-        r = requests.post(webhook_url, json=msg)
+        header = {"X-Api-Key": os.getenv("API_KEY_SWAP")}
+        r = requests.post(webhook_url, json=msg, headers=header)
         if r.status_code != 200:
             self.logger.debug("Something went wrong sending push notification to swapfiets.")
         else:

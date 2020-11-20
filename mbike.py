@@ -22,6 +22,8 @@ class Bike:
 
     @staticmethod
     def look_up_frame_number(conn, frame_number, brand):
+        if not frame_number or frame_number == "":
+            return
         cur = conn.cursor()
         cur.execute("""
             SELECT bike_id, frame_number, chip_number, license_plate, brand, color, description
@@ -32,6 +34,8 @@ class Bike:
 
     @staticmethod
     def look_up_chip_number(conn, chip_number, brand):
+        if not chip_number or chip_number == "":
+            return
         cur = conn.cursor()
         cur.execute("""
             SELECT bike_id, frame_number, chip_number, license_plate, brand, color, description
@@ -42,6 +46,8 @@ class Bike:
 
     @staticmethod
     def look_up_license_plate(conn, license_plate, brand):
+        if not license_plate or license_plate == "":
+            return
         cur = conn.cursor()
         cur.execute("""
             SELECT bike_id, frame_number, chip_number, license_plate, brand, color, description
@@ -68,7 +74,9 @@ class Bike:
         chip_number = data.get("chip_number")
         license_plate = data.get("license_plate")
         brand = data.get("brand")
-        if not frame_number and not chip_number and not license_plate:
+        if not brand or brand == "":
+            raise InvalidUsage("No brand defined.", status_code=400)
+        if (not frame_number or frame_number == "") and (not chip_number or chip_number == "") and (not license_plate or license_plate == ""):
             raise InvalidUsage("No frame_number, chip_number or license_plate defined.", status_code=400)
         bike = Bike.try_create_bike_from_existing_data(conn, brand, frame_number, chip_number, license_plate)
 
@@ -87,7 +95,6 @@ class Bike:
     @staticmethod
     def convert(data):
         result = Bike.check_if_bike_exists(data, conn)
-        
         
     def __str__(self):
         return ("bike_id: " + str(self.bike_id) + "\n"

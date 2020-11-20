@@ -40,6 +40,11 @@ class InvalidUsage(Exception):
         rv['message'] = self.message
         return rv
 
+@app.errorhandler(psycopg2.InterfaceError)
+def handle_db_connection_error(e):
+    print("Reconnect DB")
+    conn = psycopg2.connect(conn_str)
+
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
@@ -54,7 +59,7 @@ def input_event():
     try:
         event_validator(data)
         print("ok")
-    except fastjsonschema.JsonSchemaException e:
+    except fastjsonschema.JsonSchemaException as e:
         return {'message': "Incorrect JSON input. [" + e.message + "]"}, 422
     
     msg = mevent.Event.insert(conn, data)

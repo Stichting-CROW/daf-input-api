@@ -25,8 +25,8 @@ class DepotDetails():
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
         cur.execute(stmt, (data.get("depot_id"), data.get("municipality_code"), data.get("name"),
-            data.get("street"), data.get("postal_code"), data.get("phone_number"), data.get("email"),
-                data.get("instruction"), data.get("city")))
+            data.get("street"), data.get("postal_code"), data.get("phone_number"), data.get("city"), data.get("email"),
+                data.get("instruction")))
         conn.commit()
 
     @staticmethod

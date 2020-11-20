@@ -4,20 +4,23 @@ import depot_details
 import enforcement_details
 
 class Event():
-    def __init__(self, bike_id, event_type, extra_information, timestamp):
+    def __init__(self, bike_id, event_type, extra_information, timestamp, depot_id, enforcement_id):
         self.event_id = None
         self.bike_id = bike_id
         self.event_type = event_type
         self.extra_information = extra_information
         self.timestamp = timestamp
+        self.depot_id = depot_id
+        self.enforcement_id = enforcement_id
 
     def save(self, conn):
         cur = conn.cursor()
 
         cur.execute("""INSERT INTO events
-            (bike_id, event_type, extra_information, timestamp)
-            VALUES (%s, %s, %s, %s) 
-            RETURNING event_id""", (self.bike_id, self.event_type, self.extra_information, self.timestamp))
+            (bike_id, event_type, extra_information, timestamp, depot_id, enforcement_details)
+            VALUES (%s, %s, %s, %s, %s, %s) 
+            RETURNING event_id""", (self.bike_id, self.event_type, self.extra_information, self.timestamp,
+                self.depot_id, self.enforcement_id))
         conn.commit()
         self.event_id = cur.fetchone()[0]
         cur.close()
@@ -25,6 +28,7 @@ class Event():
 
     @staticmethod
     def insert(conn, data):
+        enforcement_id = None
         if data["event_type"] in ["check_in_depot", "check_out_depot"]:
             if not data.get("depot_details"):
                 raise InvalidUsage("depot_details should be specified.", status_code=400)
@@ -33,7 +37,7 @@ class Event():
         if data["event_type"] == "check_in_depot":
             if not data.get("enforcement_details"):
                 raise InvalidUsage("enforcement_details should be specified on check_in.", status_code=400)
-            enforcement_details.EnforcementDetails.create_enforcement_details(conn, data.get("enforcement_details"))
+            enforcement_id = enforcement_details.EnforcementDetails.create_enforcement_details(conn, data.get("enforcement_details"))
 
         bike = mbike.Bike.check_if_bike_exists_or_create(conn, data.get("bike"))
 
@@ -43,7 +47,7 @@ class Event():
         else:
             data["timestamp"] = datetime.datetime.strftime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
 
-        event = Event(bike.bike_id, data["event_type"], data["extra_information"], timestamp)
+        event = Event(bike.bike_id, data["event_type"], data["extra_information"], timestamp, data.get("depot_details").get("depot_id"), enforcement_id)
         event.save(conn)
         data["event_id"] = event.event_id
         return data
