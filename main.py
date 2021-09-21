@@ -1,23 +1,11 @@
 import fastjsonschema
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, g
 import json
 import mevent
 import os
-import psycopg2
+from psycopg2.pool import SimpleConnectionPool
 import webhook_pusher
 app = Flask(__name__)
-
-
-conn_str = "dbname=daf2"
-
-if "IP" in os.environ:
-    conn_str += " host={} ".format(os.environ['IP'])
-if "DB_PASSWORD" in os.environ:
-    conn_str += " user=daf password={}".format(os.environ['DB_PASSWORD'])
-
-
-conn = psycopg2.connect(conn_str)
-
 
 f = open("dafs.schema", "r")
 schemadict = json.loads(f.read())
@@ -25,6 +13,26 @@ event_validator = fastjsonschema.compile(schemadict)
 output = webhook_pusher.WebHookPusher()
 output.start()
 
+conn_str = "dbname=daf2"
+if "IP" in os.environ:
+    conn_str += " host={} ".format(os.environ['IP'])
+if "DB_PASSWORD" in os.environ:
+    conn_str += " user=daf password={}".format(os.environ['DB_PASSWORD'])
+pgpool = SimpleConnectionPool(minconn=1, 
+        maxconn=5, 
+        dsn=conn_str)
+
+def get_db():
+    if 'db' not in g:
+        g.db = pgpool.getconn()
+    return g.db
+
+@app.teardown_appcontext
+def close_db(e=None):
+    db = g.pop('db', None)
+
+    if db is not None:
+        pgpool.putconn(db)
 
 class InvalidUsage(Exception):
     status_code = 400
@@ -39,11 +47,6 @@ class InvalidUsage(Exception):
         rv = dict(self.payload or ())
         rv['message'] = self.message
         return rv
-
-@app.errorhandler(psycopg2.InterfaceError)
-def handle_db_connection_error(e):
-    print("Reconnect DB")
-    conn = psycopg2.connect(conn_str)
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
@@ -62,7 +65,7 @@ def input_event():
     except fastjsonschema.JsonSchemaException as e:
         return {'message': "Incorrect JSON input. [" + e.message + "]"}, 422
     
-    msg = mevent.Event.insert(conn, data)
+    msg = mevent.Event.insert(get_db(), data)
     if msg:
         output.enqueue(msg)
     return jsonify({"status": "created"})

@@ -9,6 +9,7 @@ class WebHookPusher():
     def __init__(self):
         self.q = Queue()
         self.logger = logging.getLogger()
+        self.session = requests.Session()
 
     def worker(self):
         while True:
@@ -16,7 +17,6 @@ class WebHookPusher():
             if item is None:
                 break
             self.send_webhook(item)
-            time.sleep(0.1)
             self.q.task_done()
 
     # Don't use externally
@@ -24,7 +24,12 @@ class WebHookPusher():
     def send_webhook(self, msg):
         self.send_swap(msg)
         webhook_url = os.getenv("WEBHOOK_URL")
-        r = requests.post(webhook_url, json=msg)
+        try:
+            r = self.session.post(webhook_url, json=msg)
+        except requests.exceptions.RequestException as e:
+            print("Error telegram webhook")
+            print(e)
+            return
         if r.status_code != 200:
             self.logger.debug("Something went wrong sending push notification.")
         else:
@@ -35,7 +40,12 @@ class WebHookPusher():
             return
         webhook_url = os.getenv("WEBHOOK_URL_SWAP")
         header = {"X-Api-Key": os.getenv("API_KEY_SWAP")}
-        r = requests.post(webhook_url, json=msg, headers=header)
+        try:
+            r = self.session.post(webhook_url, json=msg, headers=header)
+        except requests.exceptions.RequestException as e:
+           print("Error versturen webhook swap")
+           print(e)
+           return
         if r.status_code != 200:
             self.logger.debug("Something went wrong sending push notification to swapfiets.")
         else:
