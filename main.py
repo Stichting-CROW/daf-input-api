@@ -13,11 +13,17 @@ event_validator = fastjsonschema.compile(schemadict)
 output = webhook_pusher.WebHookPusher()
 output.start()
 
-conn_str = "dbname=daf2"
-if "IP" in os.environ:
-    conn_str += " host={} ".format(os.environ['IP'])
+conn_str = f"dbname={os.getenv('DB_NAME')}"
+
+if "DB_HOST" in os.environ:
+    conn_str += " host={} ".format(os.environ['DB_HOST'])
+if "DB_USER" in os.environ:
+    conn_str += " user={}".format(os.environ['DB_USER'])
 if "DB_PASSWORD" in os.environ:
-    conn_str += " user=daf password={}".format(os.environ['DB_PASSWORD'])
+    conn_str += " password={}".format(os.environ['DB_PASSWORD'])
+if "DB_PORT" in os.environ:
+    conn_str += " port={}".format(os.environ['DB_PORT'])
+
 pgpool = SimpleConnectionPool(minconn=1, 
         maxconn=5, 
         dsn=conn_str)
