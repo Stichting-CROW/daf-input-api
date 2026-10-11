@@ -27,7 +27,7 @@ async def lifespan(app: FastAPI):
         yield
     finally:
         output.stop()
-        app.state.pool.close()
+        app.state.pool.closeall()
 
 
 app = FastAPI(title="DAF Input API", version="0.2.0", lifespan=lifespan)

@@ -2,13 +2,12 @@ import logging
 import os
 
 from fastapi import Request
-from psycopg.conninfo import make_conninfo
-from psycopg_pool import ConnectionPool
+from psycopg2.pool import ThreadedConnectionPool
 
 logger = logging.getLogger(__name__)
 
 
-def build_conninfo() -> str:
+def build_conninfo() -> dict:
     kwargs = {"dbname": os.getenv("DB_NAME")}
     if "DB_HOST" in os.environ:
         kwargs["host"] = os.environ["DB_HOST"]
@@ -22,18 +21,24 @@ def build_conninfo() -> str:
         "PostgreSQL connection parameters: %s",
         {**kwargs, "password": "***" if "password" in kwargs else None},
     )
-    return make_conninfo(**kwargs)
+    return kwargs
 
 
-def create_pool() -> ConnectionPool:
-    return ConnectionPool(
-        conninfo=build_conninfo(),
-        min_size=1,
-        max_size=5,
-        open=True,
+def create_pool() -> ThreadedConnectionPool:
+    return ThreadedConnectionPool(
+        minconn=1,
+        maxconn=5,
+        **build_conninfo(),
     )
 
 
 def get_db(request: Request):
-    with request.app.state.pool.connection() as conn:
+    pool = request.app.state.pool
+    conn = pool.getconn()
+    try:
         yield conn
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        pool.putconn(conn)
