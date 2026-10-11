@@ -18,10 +18,7 @@ def build_conninfo() -> str:
         kwargs["password"] = os.environ["DB_PASSWORD"]
     if "DB_PORT" in os.environ:
         kwargs["port"] = os.environ["DB_PORT"]
-    logger.info(
-        "PostgreSQL connection parameters: %s",
-        {**kwargs, "password": "***" if "password" in kwargs else None},
-    )
+    logger.info("PostgreSQL connection parameters: %s", kwargs)
     return make_conninfo(**kwargs)
 
 
