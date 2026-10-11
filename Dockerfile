@@ -1,15 +1,11 @@
-FROM python:3.9-slim
+FROM python:3.14-slim
 
-RUN apt-get clean \
-    && apt-get -y update
-RUN apt-get -y install python3-dev \
-    && apt-get -y install build-essential  
-  
-COPY requirements.txt /
-RUN pip install -r /requirements.txt
+WORKDIR /srv/fastapi_app
 
-COPY . /srv/flask_app
-WORKDIR /srv/flask_app
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
 
 RUN chmod +x ./start.sh
 CMD ["./start.sh"]

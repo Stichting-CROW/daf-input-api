@@ -1,18 +1,16 @@
-import datetime
-import mbike
+from models import EnforcementDetails as EnforcementDetailsModel
 
-class EnforcementDetails():
 
+class EnforcementDetails:
     @staticmethod
-    def create_enforcement_details(conn, data):
-        cur = conn.cursor()
-        timestamp = None
-        stmt = """INSERT INTO enforcement
-            (city, municipality_code, location, location_description, free_text_reason)
-            VALUES (%s, %s, %s, %s, %s)
-            RETURNING enforcement_id
-            """
-        cur.execute(stmt, (data.get("city"), data.get("municipality_code"), None, data.get("location_description"), 
-            data.get("free_text_reason")))
+    def create_enforcement_details(conn, data: EnforcementDetailsModel):
+        with conn.cursor() as cur:
+            cur.execute("""INSERT INTO enforcement
+                (city, municipality_code, location, location_description, free_text_reason)
+                VALUES (%s, %s, %s, %s, %s)
+                RETURNING enforcement_id
+                """, (data.city, data.municipality_code, None, data.location_description,
+                    data.free_text_reason))
+            enforcement_id = cur.fetchone()[0]
         conn.commit()
-        return cur.fetchone()[0]
+        return enforcement_id

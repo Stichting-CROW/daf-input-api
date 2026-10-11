@@ -1,77 +1,52 @@
-import fastjsonschema
-from flask import Flask, request, jsonify, g
-import json
+from contextlib import asynccontextmanager
+
+from fastapi import Depends, FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+
 import mevent
-import os
-from psycopg2.pool import SimpleConnectionPool
 import webhook_pusher
-app = Flask(__name__)
+from db import create_pool, get_db
+from exceptions import InvalidUsage
+from models import EventIn
 
-f = open("dafs.schema", "r")
-schemadict = json.loads(f.read())
-event_validator = fastjsonschema.compile(schemadict)
 output = webhook_pusher.WebHookPusher()
-output.start()
 
-conn_str = f"dbname={os.getenv('DB_NAME')}"
 
-if "DB_HOST" in os.environ:
-    conn_str += " host={} ".format(os.environ['DB_HOST'])
-if "DB_USER" in os.environ:
-    conn_str += " user={}".format(os.environ['DB_USER'])
-if "DB_PASSWORD" in os.environ:
-    conn_str += " password={}".format(os.environ['DB_PASSWORD'])
-if "DB_PORT" in os.environ:
-    conn_str += " port={}".format(os.environ['DB_PORT'])
-
-pgpool = SimpleConnectionPool(minconn=1, 
-        maxconn=5, 
-        dsn=conn_str)
-
-def get_db():
-    if 'db' not in g:
-        g.db = pgpool.getconn()
-    return g.db
-
-@app.teardown_appcontext
-def close_db(e=None):
-    db = g.pop('db', None)
-
-    if db is not None:
-        pgpool.putconn(db)
-
-class InvalidUsage(Exception):
-    status_code = 400
-    def __init__(self, message, status_code=None, payload=None):
-        Exception.__init__(self)
-        self.message = message
-        if status_code is not None:
-            self.status_code = status_code
-        self.payload = payload
-
-    def to_dict(self):
-        rv = dict(self.payload or ())
-        rv['message'] = self.message
-        return rv
-
-@app.errorhandler(InvalidUsage)
-def handle_invalid_usage(error):
-    response = jsonify(error.to_dict())
-    response.status_code = error.status_code
-    return response
-
-@app.route('/event',  methods=['POST'])
-def input_event():
-    data = request.get_json()
-    if not data:
-        return {'message': "Check if JSON is valid and correct application header is present."}, 400
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.pool = create_pool()
+    output.start()
     try:
-        event_validator(data)
-        print("ok")
-    except fastjsonschema.JsonSchemaException as e:
-        return {'message': "Incorrect JSON input. [" + e.message + "]"}, 422
-    
-    msg = mevent.Event.insert(get_db(), data)
+        yield
+    finally:
+        output.stop()
+        app.state.pool.close()
+
+
+app = FastAPI(title="DAF Input API", version="0.2.0", lifespan=lifespan)
+
+
+@app.exception_handler(InvalidUsage)
+async def handle_invalid_usage(request: Request, error: InvalidUsage):
+    return JSONResponse(status_code=error.status_code, content=error.to_dict())
+
+
+@app.exception_handler(RequestValidationError)
+async def handle_validation_error(request: Request, error: RequestValidationError):
+    messages = "; ".join(
+        ".".join(str(part) for part in item["loc"]) + ": " + item["msg"]
+        for item in error.errors()
+    )
+    return JSONResponse(
+        status_code=422,
+        content={"message": "Incorrect JSON input. [" + messages + "]"},
+    )
+
+
+@app.post("/event")
+def input_event(data: EventIn, conn=Depends(get_db)):
+    msg = mevent.Event.insert(conn, data)
     if msg:
         output.enqueue(msg)
-    return jsonify({"status": "created"})
+    return {"status": "created"}
