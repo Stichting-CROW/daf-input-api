@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, Request
@@ -9,6 +10,11 @@ import webhook_pusher
 from db import create_pool, get_db
 from exceptions import InvalidUsage
 from models import EventIn
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+)
 
 output = webhook_pusher.WebHookPusher()
 
